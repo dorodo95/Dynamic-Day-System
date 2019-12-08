@@ -10,15 +10,40 @@ public class EnvironmentMaterialHandler : AssetPostprocessor
     {
         if(assetImporter.importSettingsMissing)
         {
-            //var path = Path.GetDirectoryName(assetPath);
+            
 
             ModelImporter importer = (ModelImporter)assetImporter;
             importer.importMaterials = false;
             importer.importAnimation = false;
             importer.isReadable = false; 
 
-            
         }
+    }
+
+    void OnPreprocessTexture()
+    {
+        var name = Path.GetFileNameWithoutExtension(assetPath);
+        TextureImporter textureImporter  = (TextureImporter)assetImporter;
+
+        if (name.Contains("_normal"))
+        {
+            textureImporter.textureType = TextureImporterType.NormalMap;
+        }
+
+        else
+        
+        if(name.Contains("_roughness"))
+        {
+            textureImporter.sRGBTexture = false;
+        }
+
+        else
+
+        if(name.Contains("_occlusion"))
+        {
+            textureImporter.sRGBTexture = false;
+        }
+
     }
 
     [MenuItem("CONTEXT/Material/Populate From Folder")]
@@ -77,23 +102,23 @@ public class EnvironmentMaterialHandler : AssetPostprocessor
             if (texPath.Contains("_albedo"))
             {
                 mat.SetTexture("_MainTex", tex);
-                Debug.Log("Setting " + texPath + " as Albedo on " + "<b>" + matName + "</b>");
+                //Debug.Log("Setting " + texPath + " as Albedo on " + "<b>" + matName + "</b>");
                 continue;
             }
 
             if (texPath.Contains("_normal"))
             {
                 mat.SetTexture("_BumpMap", tex);
-                mat.EnableKeyword("_NORMALMAP");
-                Debug.Log("Setting " + texPath + " as Normal on " + "<b>" + matName + "</b>");
+                //mat.EnableKeyword("_NORMALMAP");
+                //Debug.Log("Setting " + texPath + " as Normal on " + "<b>" + matName + "</b>");
                 continue;
             }
 
             if (texPath.Contains("_roughness") || texPath.Contains("_glossiness"))
             {
-                mat.SetTexture("_SpecGlossMap", tex);
-                mat.EnableKeyword("_SPECGLOSSMAP");
-                Debug.Log("Setting " + texPath + " as Roughness/Glossiness on " + "<b>" + matName + "</b>");
+                mat.SetTexture("_Roughness", tex);
+                //mat.EnableKeyword("_SPECGLOSSMAP");
+                //Debug.Log("Setting " + texPath + " as Roughness/Glossiness on " + "<b>" + matName + "</b>");
                 continue;
             }
 
@@ -101,7 +126,7 @@ public class EnvironmentMaterialHandler : AssetPostprocessor
             {
                 mat.SetTexture("_MetallicGlossMap", tex);
                 mat.EnableKeyword("_METALLICGLOSSMAP");
-                Debug.Log("Setting " + texPath + " as Metallicness on " + "<b>" + matName + "</b>");
+                //Debug.Log("Setting " + texPath + " as Metallicness on " + "<b>" + matName + "</b>");
                 continue;
             }
 
@@ -109,7 +134,7 @@ public class EnvironmentMaterialHandler : AssetPostprocessor
             {
                 mat.SetTexture("_EmissionMap", tex);
                 mat.EnableKeyword("_EMISSION");
-                Debug.Log("Setting " + texPath + " as Emissive on " + "<b>" + matName + "</b>");
+                //Debug.Log("Setting " + texPath + " as Emissive on " + "<b>" + matName + "</b>");
                 continue;
             }
         }
