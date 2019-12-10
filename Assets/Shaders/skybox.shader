@@ -14,6 +14,7 @@
 	SubShader
 	{
 		Tags { "Queue"="Background" "RenderType"="Background" "PreviewType"="Skybox" }
+		ZWrite Off
 
 		Pass
 		{
