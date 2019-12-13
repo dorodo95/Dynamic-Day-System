@@ -1,4 +1,4 @@
-﻿Shader "_Scenery/Default"
+﻿Shader "_Scenery/Snow"
 {
     Properties
     {
@@ -16,7 +16,7 @@
 
         CGPROGRAM
         // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Standard fullforwardshadows
+        #pragma surface surf Standard vertex:vert fullforwardshadows
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.0
@@ -48,17 +48,19 @@
         {
           UNITY_INITIALIZE_OUTPUT(Input,o);
           o.worldPos = mul(unity_ObjectToWorld, v.vertex);
+            float2 OffsetUV = (o.worldPos.xz - _camPosition.xz) / (_orthoCamSize * 2) + 0.5;
+          fixed3 rtMap = tex2Dlod(_RTTexture, OffsetUV.xyxy);
+          v.vertex.y += 0.5 * (1 - rtMap);
         }
 
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
-            float2 OffsetUV = (IN.worldPos.xz - _camPosition.xz) / (_orthoCamSize * 2) + 0.5;
-            fixed3 rtMap = tex2D(_RTTexture, OffsetUV);
-            fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+            fixed4 c = _Color;
             o.Albedo = c.rgb;
             o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_MainTex));
             fixed rmap = tex2D (_Roughness, IN.uv_MainTex);
-            o.Smoothness = 1 - rmap * ( 1- saturate(rtMap));
+            o.Smoothness = 1 - rmap;
+            //o.Smoothness = 1 - rmap * ( 1- saturate(rtMap));
             o.Metallic = _Metallic;
             o.Alpha = c.a;
         }
