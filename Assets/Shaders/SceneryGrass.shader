@@ -22,6 +22,7 @@
         sampler2D _MainTex;
         sampler2D _Roughness;
         sampler2D _BumpMap;
+        sampler2D _mScreenSpaceShadows;
 
         struct Input
         {
@@ -30,6 +31,7 @@
             float3 worldNormal;
             float3 viewDir;
             float3 tangent_input;
+            float4 screenPos;
         };
 
         half _Metallic;
@@ -44,6 +46,8 @@
 
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
+            float2 screenUV = IN.screenPos.xy / IN.screenPos.w;
+            fixed shadowMask = tex2D(_mScreenSpaceShadows, screenUV);
             // Albedo comes from a texture tinted by color
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
             //c.rgb = lerp(fixed3(0,0,0), c.rgb, IN.vertexColor.r);
@@ -52,7 +56,7 @@
             tangentMask = pow(tangentMask,1.5);
             o.Emission = 1 - saturate(dot(IN.worldNormal, IN.viewDir));
             o.Emission = saturate(pow(o.Emission, 30) + pow(o.Emission, 5) * 0.1) * (_LightColor0 * 7) * c.rgb * tangentMask;
-            o.Emission *= tangentMask;
+            o.Emission *= tangentMask * shadowMask;
             o.Albedo = c.rgb;
             fixed rmap = tex2D (_Roughness, IN.uv_MainTex);
             o.Smoothness = 1 - rmap;

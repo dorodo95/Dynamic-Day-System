@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEditor;
 
 public class DebugMoveCameraWithEditor : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
+#if UNITY_EDITOR
+    // Use this for initialization
+    void Start () {
 	}
 	
 	// Update is called once per frame
@@ -18,4 +18,7 @@ public class DebugMoveCameraWithEditor : MonoBehaviour {
         }
 
     }
+
+#endif
 }
+

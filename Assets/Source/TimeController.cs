@@ -76,7 +76,7 @@ public class TimeController : MonoBehaviour {
 
         UpdateDayCycle();
 
-        Debug.Log(time);
+        //Debug.Log(time);
     }
 
     private void UpdateDayCycle()
@@ -96,7 +96,7 @@ public class TimeController : MonoBehaviour {
         Shader.SetGlobalFloat(timeID, time);
         Shader.SetGlobalVector(sunDirectionID, _sunLight.transform.forward);
         Shader.SetGlobalVector(moonDirectionID, _moonLight.transform.forward);
-        Debug.Log(_horizonColor);
+        //Debug.Log(_horizonColor);
         RenderSettings.fogColor = _horizonColor;
         _sunLight.intensity =  sunIntensityCurve.Evaluate(time * 24);
         _moonLight.intensity = moonIntensityCurve.Evaluate(time * 24);
