@@ -1,4 +1,4 @@
-﻿Shader "Unlit/testMoon"
+﻿Shader "Unlit/testClouds"
 {
     Properties
     {
@@ -9,13 +9,13 @@
     SubShader
     {
         Tags { "RenderType"="Opaque" }
+        ZWrite On
 
         Pass
         {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #define sqr2 1.41421356237
 
             #include "UnityCG.cginc"
 
@@ -37,8 +37,6 @@
             float3 _xAxis;
             float3 _zAxis;
             float3 _moonPhase;
-            float _Tiling;
-            float4 _MoonColor;
 
             v2f vert (appdata v)
             {
@@ -53,19 +51,13 @@
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 col;
-                col.r = length( (i.localPos - _xAxis) / sqr2 );
-                col.g = length( (i.localPos - i.yAxis) / sqr2 );
-                col.b = length( (i.localPos - _zAxis) / sqr2 );
-                col = 1 - col;
-                col.b = step(col.b,0);
-                col += col.b;
-                float off = 0.5/_Tiling;
-                col.rg += off;
-                col *= _Tiling;
-                float moon = tex2D(_MainTex, col.xy).a * 2;
-                float3 moonNorm = UnpackNormal( tex2D(_MainTex, col.xy)).rgb;
-                moon *= saturate(dot(_moonPhase, moonNorm) * 1.5);
-                return float4(moon.r * _MoonColor);
+                fixed3 normPos = i.localPos * 0.5 + 0.5;
+                fixed2 radUV = atan2(normPos.z,normPos.x);
+                fixed lenUV = distance(fixed3(normPos.xz,0),fixed3(0,0,0));
+                radUV.y = lenUV;
+                fixed4 tex = tex2D(_MainTex, fixed2(radUV.x + frac(_Time.r), radUV.y) );
+                return fixed4(tex);
+                
             }
             ENDCG
         }

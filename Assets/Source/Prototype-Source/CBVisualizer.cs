@@ -19,7 +19,7 @@ public class CBVisualizer : MonoBehaviour
         if (m_light && cb == null)
         {
             cb = new CommandBuffer();
-            cb.name = "THIS IS DOG";
+            cb.name = "GrabScrnSpcShadows";
             cb.SetGlobalTexture("_mScreenSpaceShadows", BuiltinRenderTextureType.CurrentActive);
             m_light.AddCommandBuffer(UnityEngine.Rendering.LightEvent.AfterScreenspaceMask, cb);
         }
