@@ -63,7 +63,7 @@
                 col.rg += off;
                 col *= _Tiling;
                 float moon = tex2D(_MainTex, col.xy).a * 2;
-                float3 moonNorm = UnpackNormal( tex2D(_MainTex, col.xy)).rgb;
+                float3 moonNorm = tex2D(_MainTex, col.xy).rgb * 2 - 1;
                 moon *= saturate(dot(_moonPhase, moonNorm) * 1.5);
                 return float4(moon.r * _MoonColor);
             }
